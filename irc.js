@@ -49,7 +49,7 @@ module.exports = function(config, sendTo) {
             if (match) {
                 message = match[1].trim();
             }
-            var text = '<' + user + '>: ' + message;
+            var text = '<' + user + '> ' + message;
             sendTo.tg(channel, text);
         }
     });
@@ -65,7 +65,7 @@ module.exports = function(config, sendTo) {
             if (match) {
                 message = match[1].trim();
             }
-            var text = '*' + user + ': ' + message + '*';
+            var text = '*' + user + ' ' + message + '*';
             sendTo.tg(channel, text);
         }
     });
