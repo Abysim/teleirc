@@ -141,6 +141,12 @@ module.exports = function(config, sendTo) {
             return;
         }
         var text;
+        
+        var caption = '';
+        if (msg.caption) {
+            caption = msg.caption + ' ';
+        }
+        
         if (msg.reply_to_message && msg.text) {
             text = msg.text.replace(/\n/g , '\n<' + getName(msg.from, config) + '> ');
             sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' +
@@ -157,7 +163,7 @@ module.exports = function(config, sendTo) {
 
             serveFile(photo.file_id, config, tg, function(url) {
                 sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' +
-                    '(Photo, ' + photo.width + 'x' + photo.height + ') ' + url);
+                    + caption + '(Photo, ' + photo.width + 'x' + photo.height + ') ' + url);
             });
         } else if (msg.new_chat_photo) {
             // pick the highest quality photo
@@ -174,7 +180,7 @@ module.exports = function(config, sendTo) {
             });
         } else if (msg.video) {
             sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' +
-                '(Video, ' + msg.video.duration + 's)');
+                + caption + '(Video, ' + msg.video.duration + 's)');
         } else if (msg.voice) {
             sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' +
                 '(Voice, ' + msg.audio.duration + 's)');
