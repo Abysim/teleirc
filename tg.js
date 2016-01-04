@@ -164,11 +164,7 @@ module.exports = function(config, sendTo) {
             reply = replyName + ', ';
         }
         
-        if (msg.reply_to_message && msg.text) {
-            text = msg.text.replace(/\n/g , '\n<' + getName(msg.from, config) + '> ');
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
-                getName(msg.reply_to_message.from, config) + ', ' + text);
-        } else if (msg.audio) {
+        if (msg.audio) {
             sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                 '(Audio)');
         } else if (msg.document) {
