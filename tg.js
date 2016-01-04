@@ -152,22 +152,34 @@ module.exports = function(config, sendTo) {
             forward = '<' + getName(msg.forward_from, config) + '> ';
         }
         
+        var reply = '';
+        if (msg.reply_to_message) {
+            var replyName = getName(msg.reply_to_message.from, config);
+            if (replyName == 'IRC') {
+                var matches = msg.reply_to_message.text.match(/<(.*?)>/);
+                if (matches) {
+                    replyName = matches[1];
+                }
+            }
+            reply = replyName + ', ';
+        }
+        
         if (msg.reply_to_message && msg.text) {
             text = msg.text.replace(/\n/g , '\n<' + getName(msg.from, config) + '> ');
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                 getName(msg.reply_to_message.from, config) + ', ' + text);
         } else if (msg.audio) {
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                 '(Audio)');
         } else if (msg.document) {
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                 '(Document)');
         } else if (msg.photo) {
             // pick the highest quality photo
             var photo = msg.photo[msg.photo.length - 1];
 
             serveFile(photo.file_id, config, tg, function(url) {
-                sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+                sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                     caption + '(Photo, ' + photo.width + 'x' + photo.height + ') ' + url);
             });
         } else if (msg.new_chat_photo) {
@@ -175,27 +187,27 @@ module.exports = function(config, sendTo) {
             var chatPhoto = msg.new_chat_photo[msg.new_chat_photo.length - 1];
 
             serveFile(chatPhoto.file_id, config, tg, function(url) {
-                sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+                sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' +
                     '(New chat photo, ' + chatPhoto.width + 'x' + chatPhoto.height + ') ' + url);
             });
         } else if (msg.sticker) {
             serveFile(msg.sticker.file_id, config, tg, function(url) {
-                sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+                sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                     '(Sticker, ' + msg.sticker.width + 'x' + msg.sticker.height + ') ' + url);
             });
         } else if (msg.video) {
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                 caption + '(Video, ' + msg.video.duration + 's)');
         } else if (msg.voice) {
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                 '(Voice, ' + msg.audio.duration + 's)');
         } else if (msg.contact) {
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                 '(Contact, ' + '"' + msg.contact.first_name + ' ' +
                 msg.contact.last_name + '", ' +
                 msg.contact.phone_number + ')');
         } else if (msg.location) {
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward +
+            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
                 '(Location, ' + 'lon: ' + msg.location.longitude +
                               ', lat: ' + msg.location.latitude + ')');
         } else if (msg.new_chat_participant) {
@@ -206,7 +218,7 @@ module.exports = function(config, sendTo) {
                 ' was removed by ' + getName(msg.from, config));
         } else {
             text = msg.text.replace(/\n/g , '\n<' + getName(msg.from, config) + '> ');
-            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + text);
+            sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply + text);
         }
     });
 
