@@ -156,9 +156,14 @@ module.exports = function(config, sendTo) {
         if (msg.reply_to_message) {
             var replyName = getName(msg.reply_to_message.from, config);
             if (replyName == 'IRC') {
-                var matches = msg.reply_to_message.text.match(/<(.*?)>/);
+                var matches = msg.reply_to_message.text.match(/^<(.*?)>/);
                 if (matches) {
                     replyName = matches[1];
+                } else {
+                    matches = msg.reply_to_message.text.match(/^\*(.*?) /);
+                    if (matches) {
+                        replyName = matches[1];
+                    }
                 }
             }
             reply = replyName + ', ';
