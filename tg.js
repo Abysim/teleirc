@@ -77,6 +77,22 @@ var getName = function(user, config) {
     return name;
 };
 
+var filterBotName = function(message) {
+    var resultName = getName(message.from, config);
+    if (resultName == '@' + config.tgBotName) {
+        var matches = message.text.match(/^<(.*?)>/);
+        if (matches) {
+            resultName = matches[1];
+        } else {
+            matches = message.text.match(/^\*(.*?) /);
+            if (matches) {
+                resultName = matches[1];
+            }
+        }
+    }
+    return resultName;
+}
+
 function randomValueBase64(len) {
     return crypto.randomBytes(Math.ceil(len * 3 / 4))
         .toString('base64')
@@ -149,23 +165,13 @@ module.exports = function(config, sendTo) {
         
         var forward = '';
         if (msg.forward_from) {
-            forward = '<' + getName(msg.forward_from, config) + '> ';
+            var forwardName = filterBotName(msg.forward_from);
+            forward = '<' + forwardName + '> ';
         }
         
         var reply = '';
         if (msg.reply_to_message) {
-            var replyName = getName(msg.reply_to_message.from, config);
-            if (replyName == '@' + config.tgBotName) {
-                var matches = msg.reply_to_message.text.match(/^<(.*?)>/);
-                if (matches) {
-                    replyName = matches[1];
-                } else {
-                    matches = msg.reply_to_message.text.match(/^\*(.*?) /);
-                    if (matches) {
-                        replyName = matches[1];
-                    }
-                }
-            }
+            var replyName = filterBotName(msg.reply_to_message);
             reply = replyName + ': ';
         }
         
