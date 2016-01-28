@@ -62,7 +62,7 @@ var getName = function(user, config) {
     var name = config.nameFormat;
 
     if (user.username) {
-        name = name.replace('%username%', user.username, 'g');
+        name = name.replace('%username%', '@' + user.username, 'g');
     } else {
         // if user lacks username, use fallback format string instead
         name = name.replace('%username%', config.usernameFallbackFormat, 'g');
@@ -155,7 +155,7 @@ module.exports = function(config, sendTo) {
         var reply = '';
         if (msg.reply_to_message) {
             var replyName = getName(msg.reply_to_message.from, config);
-            if (replyName == 'IRC') {
+            if (replyName == '@' + config.tgBotName) {
                 var matches = msg.reply_to_message.text.match(/^<(.*?)>/);
                 if (matches) {
                     replyName = matches[1];
@@ -166,7 +166,7 @@ module.exports = function(config, sendTo) {
                     }
                 }
             }
-            reply = replyName + ', ';
+            reply = replyName + ': ';
         }
         
         if (msg.audio) {
@@ -177,7 +177,7 @@ module.exports = function(config, sendTo) {
         } else if (msg.document) {
             serveFile(msg.document.file_id, config, tg, function(url) {
                 sendTo.irc(channel.ircChan, '<' + getName(msg.from, config) + '> ' + forward + reply +
-                    '(Document) ' + url);
+                    '(File) ' + url);
             });
         } else if (msg.photo) {
             // pick the highest quality photo

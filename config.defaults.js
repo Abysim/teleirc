@@ -40,6 +40,7 @@ config.nameFormat = '%username%';
 // fallback format string for %username% if sender lacks username
 config.usernameFallbackFormat = '%firstName% %lastName%';
 
+config.tgBotName = 'ircBot';
 config.ircNick = 'tgBot';
 config.ircServer = 'irc.cs.hut.fi';
 
