@@ -91,7 +91,7 @@ var filterBotName = function(message) {
         }
     }
     return resultName;
-}
+};
 
 function randomValueBase64(len) {
     return crypto.randomBytes(Math.ceil(len * 3 / 4))
