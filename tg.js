@@ -149,9 +149,10 @@ module.exports = function(config, sendTo) {
         
         var forward = '';
         if (msg.forward_from) {
+            forward = 'Fwd: ';
             var forwardName = getName(msg.forward_from, config);
             if (forwardName != '@' + config.tgBotName) {
-                forward = '<' + forwardName + '> ';
+                forward += '<' + forwardName + '> ';
             }
         }
         
