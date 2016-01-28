@@ -77,7 +77,7 @@ var getName = function(user, config) {
     return name;
 };
 
-var filterBotName = function(message) {
+var filterBotName = function(message, config) {
     var resultName = getName(message.from, config);
     if (resultName == '@' + config.tgBotName) {
         var matches = message.text.match(/^<(.*?)>/);
@@ -165,13 +165,13 @@ module.exports = function(config, sendTo) {
         
         var forward = '';
         if (msg.forward_from) {
-            var forwardName = filterBotName(msg.forward_from);
+            var forwardName = filterBotName(msg.forward_from, config);
             forward = '<' + forwardName + '> ';
         }
         
         var reply = '';
         if (msg.reply_to_message) {
-            var replyName = filterBotName(msg.reply_to_message);
+            var replyName = filterBotName(msg.reply_to_message, config);
             reply = replyName + ': ';
         }
         
