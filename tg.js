@@ -5,7 +5,7 @@ var irc = require('./irc');
 var nodeStatic = require('node-static');
 var mkdirp = require('mkdirp');
 var crypto = require('crypto');
-var execFile = require('child_process');
+var exec = require('child_process');
 var dwebp = require('dwebp-bin');
 
 // tries to read chat ids from a file
@@ -94,12 +94,17 @@ var serveFile = function(fileId, config, tg, callback) {
                                    randomString).then(function(filePath) {
         if (path.extname(filePath) == '.webp') {
             var newPath = path.dirname(filePath) + '/' + path.basename(filePath, '.webp') + '.png';
-            execFile.execFile(dwebp.path, [filePath, '-o',  newPath], function (error) {
-                if (error) {
-                    throw error;
+            exec.execFile(dwebp.path, [filePath, '-o', newPath], function (error) {
+                if (!error) {
+                    filePath = newPath;
+                    console.log('Image was converted');
+                }  else {
+                    console.log(filePath);
+                    console.log(newPath);
+                    console.log(error);
                 }
-                console.log('Image was converted');
-                filePath = newPath;
+
+
             });
         }
         callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
