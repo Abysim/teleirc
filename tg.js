@@ -5,6 +5,8 @@ var irc = require('./irc');
 var nodeStatic = require('node-static');
 var mkdirp = require('mkdirp');
 var crypto = require('crypto');
+var execFile = require('child_process');
+var dwebp = require('dwebp-bin');
 
 // tries to read chat ids from a file
 var readChatIds = function(arr) {
@@ -90,8 +92,20 @@ var serveFile = function(fileId, config, tg, callback) {
     mkdirp(process.env.HOME + '/.teleirc/files/' + randomString);
     tg.downloadFile(fileId, process.env.HOME + '/.teleirc/files/' +
                                    randomString).then(function(filePath) {
+        if (path.extname(filePath) == '.webp') {
+            var newPath = path.dirname(filePath) + '/' + path.basename(filePath, '.webp') + '.png';
+            execFile.execFile(dwebp.path, [filePath, '-o',  newPath], function (error) {
+                if (error) {
+                    throw error;
+                }
+                console.log('Image was converted');
+                filePath = newPath;
+            });
+        }
         callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
     });
+
+
 };
 
 module.exports = function(config, sendTo) {
