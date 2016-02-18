@@ -90,27 +90,19 @@ function randomValueBase64(len) {
 var serveFile = function(fileId, config, tg, callback) {
     var randomString = randomValueBase64(config.mediaRandomLenght);
     mkdirp(process.env.HOME + '/.teleirc/files/' + randomString);
-    tg.downloadFile(fileId, process.env.HOME + '/.teleirc/files/' +
-                                   randomString).then(function(filePath) {
+    tg.downloadFile(fileId, process.env.HOME + '/.teleirc/files/' + randomString).then(function(filePath) {
         if (path.extname(filePath) == '.webp') {
             var newPath = path.dirname(filePath) + '/' + path.basename(filePath, '.webp') + '.png';
             exec.execFile(dwebp.path, [filePath, '-o', newPath], function (error) {
                 if (!error) {
                     filePath = newPath;
-                    console.log('Image was converted');
-                }  else {
-                    console.log(filePath);
-                    console.log(newPath);
-                    console.log(error);
                 }
-
-
+                callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
             });
+        } else {
+            callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
         }
-        callback(config.httpLocation + '/' + randomString + '/' + path.basename(filePath));
     });
-
-
 };
 
 module.exports = function(config, sendTo) {
