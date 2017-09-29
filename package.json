@@ -3,19 +3,16 @@
   "description": "Telegram <-> IRC gateway",
   "preferGlobal": true,
   "bin": {
-    "teleirc": "teleirc.js"
+    "teleirc": "bin/teleirc"
   },
   "scripts": {
     "prestart": "npm install",
-    "start": "node teleirc.js",
-    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha"
+    "start": "node bin/teleirc",
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha",
+    "join-tg": "node src/join-tg.js"
   },
-  "version": "0.4.0",
-  "licenses": [
-    {
-      "type": "MIT"
-    }
-  ],
+  "version": "0.4.7",
+  "license": "MIT",
   "repository": [
     {
       "type": "git",
@@ -25,17 +22,23 @@
   "bugs": "https://github.com/FruitieX/teleirc/issues",
   "homepage": "https://github.com/FruitieX/teleirc",
   "dependencies": {
-    "irc": "git://github.com/Abysim/node-irc.git",
-    "lodash": "^3.10.1",
+    "git-rev-sync": "^1.6.0",
+    "imgur": "^0.2.0",
+    "irc-colors": "^1.2.1",
+    "irc-framework": "^2.8.1",
+    "lodash": "^4.12.0",
     "mkdirp": "^0.5.1",
     "node-static": "^0.7.7",
-    "node-telegram-bot-api": "^0.15.0",
-    "dwebp-bin": "git://github.com/Abysim/node-dwebp-bin.git"
+    "node-telegram-bot-api": "^0.27.0",
+    "os-homedir": "^1.0.1",
+    "string.prototype.startswith": "^0.2.0",
+    "winston": "^2.2.0",
+    "yargs": "^4.7.0"
   },
   "devDependencies": {
-    "jscs": "^2.2.1",
-    "mocha": "^2.3.3",
-    "mocha-jscs": "^4.0.0",
-    "mocha-jshint": "^2.2.3"
+    "jscs": "^3.0.3",
+    "mocha": "^2.4.5",
+    "mocha-jscs": "^5.0.0",
+    "mocha-jshint": "^2.3.1"
   }
 }
